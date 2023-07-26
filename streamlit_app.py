@@ -48,34 +48,40 @@ except URLError as e:
 
 streamlit.write('The user entered ', fruit_choice)
 
-# fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-# streamlit.text(fruityvice_response.json())
-
-# The requirements.txt file we added in this project tells Streamlit what libraries we plan to use in our project so it can add them in advance.
+#!!# The requirements.txt file we added in this project tells Streamlit what libraries we plan to use in our project so it can add them in advance.
 
 streamlit.stop() #temporarily stop from here while troubleshooting
 
+# ---------------------------------------------------------------- #
+#Snowflake-related steps
+streamlit.text("The fruit load list contains:")
 
+def get_fruit_load_list():
+    with my_cnx.cursor() as my_cur:
+        my_cur.execute("select * from pc_rivery_db.public.fruit_load_list")
+        return my_cur.fetchall()
 
-my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
-my_cur = my_cnx.cursor()
+if streamlit.button('Get Fruit Load List'): #Add a button to load the fruit; the function returns true or false depending if the user clicked the button in the app
+    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+    my_data_row = get_fruit_load_list()
+    streamlit.dataframe(my_data_row)
+
+add_my_fruit =  streamlit.text_input('What fruit would you like to add?') # allow the end user to add a fruit from the list
+streamlit.write("Thanks for adding ", add_my_fruit)
+
+my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('from streamlit')") 
+# ---------------------------------------------------------------- #
+
+#!!# Archived codes
+
+# fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+# streamlit.text(fruityvice_response.json())
 
 # my_cur.execute("SELECT CURRENT_USER(), CURRENT_ACCOUNT(), CURRENT_REGION()")
 # streamlit.text("Hello from Snowflake:")
 
-my_cur.execute("select * from pc_rivery_db.public.fruit_load_list")
-streamlit.text("The fruit load list contains:")
-
 # my_data_row = my_cur.fetchone()
-my_data_row = my_cur.fetchall()
-streamlit.dataframe(my_data_row)
 
-## allow the end user to add a fruit from the list
-add_my_fruit =  streamlit.text_input('What fruit would you like to add?')
-streamlit.write("Thanks for adding ", add_my_fruit)
-
-my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('from streamlit')") 
-## Note: This command above on its own will result to it being executed over and over again everytime there is interaction in the app
-## Note: We need to organize our code and introduce some structure that will ensure all the code doesn't run everytime. A row should only be added when we want a row to be added. 
-
-
+# my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('from streamlit')") 
+#!!# Note: This command above on its own will result to it being executed over and over again everytime there is interaction in the app
+#!!# Note: We need to organize our code and introduce some structure that will ensure all the code doesn't run everytime. A row should only be added when we want a row to be added. 

@@ -46,14 +46,14 @@ try:
 except URLError as e:
   streamlit.error()
 
-streamlit.write('The user entered ', fruit_choice)
+# streamlit.write('The user entered ', fruit_choice)
 
 # ---------------------------------------------------------------- #
 #Snowflake-related steps: 
 #Loading the list from snowflake and adding user inputted items back to the snowfake table
 #!!# The requirements.txt file we added in this project tells Streamlit what libraries we plan to use in our project so it can add them in advance.
 
-streamlit.text("The fruit load list contains:")
+streamlit.header("View Our Fruit List - Add Your Favorites!")
 
 def get_fruit_load_list():
     with my_cnx.cursor() as my_cur:

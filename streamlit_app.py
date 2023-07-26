@@ -41,6 +41,8 @@ streamlit.dataframe(fruityvice_normalized)
 
 # The requirements.txt file we added in this project tells Streamlit what libraries we plan to use in our project so it can add them in advance.
 
+streamlit.stop() #temporarily stop from here while troubleshooting
+
 import snowflake.connector
 
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
@@ -60,6 +62,8 @@ streamlit.dataframe(my_data_row)
 add_my_fruit =  streamlit.text_input('What fruit would you like to add?')
 streamlit.write("Thanks for adding ", add_my_fruit)
 
-my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('from streamlit')")
+my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('from streamlit')") 
+## Note: This command above on its own will result to it being executed over and over again everytime there is interaction in the app
+## Note: We need to organize our code and introduce some structure that will ensure all the code doesn't run everytime. A row should only be added when we want a row to be added. 
 
 

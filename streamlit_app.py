@@ -74,14 +74,7 @@ add_my_fruit =  streamlit.text_input('What fruit would you like to add?') # allo
 if streamlit.button('Add a Fruit to the list'): # using this encapsulation button, we only insert or execute the command if the button is clicked or returns true, instead of being executed every interaction made in the app
     my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
     back_from_function = insert_row_snowflake(add_my_fruit)
-    streamlit.dataframe(my_data_row) 
-    streamlit.write("Thanks for adding ", add_my_fruit)
-
-streamlit.stop() #temporarily stop from here while troubleshooting
-
-
-
-
+    streamlit.text(back_from_function)
 
 # ---------------------------------------------------------------- #
 

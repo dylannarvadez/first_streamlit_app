@@ -26,18 +26,22 @@ fruits_to_show = my_fruit_list.loc[fruits_selected]
 ## Display the table on the page.
 streamlit.dataframe(fruits_to_show)
 
-## Display fruityvice api response
-streamlit.header('Fruityvice Fruit Advice')
+def get_fruityvice_data(this_fruit_choice):
+    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + this_fruit_choice)
+    fruityvice_normalized = pandas.json_normalize(fruityvice_response.json()) ## take the json text version of the response above and normalize it
+    return fruityvice_normalized
 
-## Introducing this structure allows us to separate the code that is loaded once from the code that should be repeated each time a new value is entered.
+#!!# Introducing this structure allows us to separate the code that is loaded once from the code that should be repeated each time a new value is entered.
+#!!# Alternately, if we did not encapculate the code, they will be executed over and over again every time there is interaction in the app.
+
+streamlit.header('Fruityvice Fruit Advice') # Display fruityvice api response
 try:
   fruit_choice = streamlit.text_input('What fruit would you like information about?')
   if not fruit_choice:
     streamlit.error("Please select a fruit to get information")
   else:
-    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
-    fruityvice_normalized = pandas.json_normalize(fruityvice_response.json()) ## take the json text version of the response above and normalize it
-    streamlit.dataframe(fruityvice_normalized) ## output the result as a table
+    back_from_function = get_fruityvice_data(fruit_choice)
+    streamlit.dataframe(back_from_function) # output the result as a table
 
 except URLError as e:
   streamlit.error()

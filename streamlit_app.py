@@ -60,16 +60,29 @@ def get_fruit_load_list():
         return my_cur.fetchall()
 
 if streamlit.button('Get Fruit Load List'): #Add a button to load the fruit; the function returns true or false depending if the user clicked the button in the app
-    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"]) # creating connection between snowflake and streamlit via the Secrets config in streamlit app settings
     my_data_row = get_fruit_load_list()
     streamlit.dataframe(my_data_row)
 
+def insert_row_snowflake(new_fruit):
+    with my_cnx.cursor() as my_cur:
+        my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('from streamlit')") 
+        return "Thanks for adding" + new_fruit
+        
+add_my_fruit =  streamlit.text_input('What fruit would you like to add?') # allow the end user to add a fruit from the list
+
+if streamlit.button('Add a Fruit to the list'): # using this encapsulation button, we only insert or execute the command if the button is clicked or returns true, instead of being executed every interaction made in the app
+    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+    back_from_function = insert_row_snowflake(add_my_fruit)
+    streamlit.dataframe(my_data_row) 
+    streamlit.write("Thanks for adding ", add_my_fruit)
+
 streamlit.stop() #temporarily stop from here while troubleshooting
 
-add_my_fruit =  streamlit.text_input('What fruit would you like to add?') # allow the end user to add a fruit from the list
-streamlit.write("Thanks for adding ", add_my_fruit)
 
-my_cur.execute("insert into pc_rivery_db.public.fruit_load_list values ('from streamlit')") 
+
+
+
 # ---------------------------------------------------------------- #
 
 #!!# Archived codes
